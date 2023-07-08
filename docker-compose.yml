@@ -17,7 +17,7 @@ services:
       - db
     build: ./server
     ports:
-      - 80:8080
+      - 8080:8080
     networks:
       - net_bridge
     volumes:
@@ -27,7 +27,7 @@ services:
       - db
     image: phpmyadmin/phpmyadmin
     ports:
-      - 8080:80
+      - 8081:80
     environment:
       - PMA_HOST=db
       - PMA_PORT=3306

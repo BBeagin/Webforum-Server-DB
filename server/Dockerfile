@@ -3,10 +3,7 @@ ENV NODE_ENV=development
 
 WORKDIR /app
 
-COPY ["package.json","package-lock.json","./"]
-
-COPY package.json ./
-COPY package-lock.json ./
+COPY ["package.json","package-lock.json","node_modules","./"]
 
 RUN npm install --development
 
