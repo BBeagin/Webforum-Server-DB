@@ -31,10 +31,10 @@ These instructions will get you up and running with the project.
     In a terminal, navigate to the location you would like the root project folder to be created in and type one of the following commands:
     
     ```shell
-    foo@bar:~$ git clone https://github.com/BBeagin/Webforum-Server-DB.git
-
+    git clone https://github.com/BBeagin/Webforum-Server-DB.git
+    ```
     or (if you have a key registered to github)
-    
+    ```shell
     git clone git@github.com:BBeagin/Webforum-Server-DB.git
     ```
 
