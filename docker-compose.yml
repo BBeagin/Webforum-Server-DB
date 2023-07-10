@@ -2,26 +2,29 @@ version: '3.9'
 
 services:
   db:
-    image: mysql:latest
+    build: ./database
     environment:
       MYSQL_DATABASE: proj_db
       MYSQL_USER: proj_user
       MYSQL_PASSWORD: password
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
-      - mysql:/var/lib/mysql
+      - mysql2:/var/lib/mysql
     networks:
       - net_bridge
   http_server:
     depends_on:
       - db
     build: ./server
+    environment:
+      SESSION_SECRET: PP72b4L68gUVIScKgVydrXpKy+A=
     ports:
       - 8080:8080
     networks:
       - net_bridge
     volumes:
       - ./server:/app
+    restart: on-failure
   db_admin:
     depends_on:
       - db
@@ -35,7 +38,7 @@ services:
       - net_bridge
 
 volumes:
-  mysql:
+  mysql2:
 
 networks:
   net_bridge:

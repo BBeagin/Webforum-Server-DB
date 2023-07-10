@@ -1,0 +1,25 @@
+<header>
+  <div class='xcontainer'>
+    <h1 id='title'><%= title %></h1>
+  </div>
+  <nav>
+    <input id='menu-check' type='checkbox'>
+    <label for='menu-check'></label>
+    <div class='xcontainer'>
+    <ul id='navbar'>
+      <li><h4>Home</h4></li>
+      <li><h4>Page1</h4></li>
+      <li><h4>Page2</h4></li>
+      <li class='category'><h4>Followed Communities</h4>
+      <ul class='dropdown'>
+      <% if (my_communities) for(var c of my_communities) {%>
+        <li><h4><%= c.name %></h4></li>
+      <% } %>
+      </ul>
+      </li>
+      <li><h4>Page5</h4></li>
+      <li><h4>About</h4></li>
+    </ul>
+    </div>
+  </nav>
+</header>
