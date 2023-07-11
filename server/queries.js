@@ -167,7 +167,7 @@ const joinGroup = async (gid,uid) => {
     return null;
 }
 
-const followUC = async (follower, community, uid) => {
+const followUC = async (follower, uid, community) => {
     const connection = await pool.getConnection();
     var rows = null;
     if(community) {
