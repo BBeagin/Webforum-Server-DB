@@ -5,24 +5,11 @@
   <title><%= username %>'s Feed</title>
 </head>
 <body>
-  <%- include('header', {title:'Your Feed', my_communities: my_communities}) %>
+  <%- include('header', {title:'Your Feed', followed_communities: followed_communities}) %>
   <% if(posts) for(var p of posts) {%>
   <div class='content'>
     <div class='container'>
-      <table>
-        <tr>
-          <h4><%= p.username %> @ <%= p.belongs_in %></h4>
-        </tr>
-        <tr>
-          <% if(p.image_content) {%>
-          <td><img id='pic' width='150px' height='200px' src='[Path to Source]' alt='[Image Content]' /></td>
-          <% } %>
-          <td id='info-cell'>
-            <h1 id='name'><u><%= p.title %></u></h1>
-            <p id='text'><%= p.text_content %></p>
-          </td>
-        </tr>
-      </table>
+      <%- include('post-table', {post: p}) %>
     </div>
   </div>
   <% } %>

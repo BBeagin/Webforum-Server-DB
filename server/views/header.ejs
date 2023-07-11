@@ -7,18 +7,27 @@
     <label for='menu-check'></label>
     <div class='xcontainer'>
     <ul id='navbar'>
-      <li><h4>Home</h4></li>
-      <li><h4>Page1</h4></li>
-      <li><h4>Page2</h4></li>
+      <li><a href="/feed"><h4>Feed</h4></a></li>
       <li class='category'><h4>Followed Communities</h4>
-      <ul class='dropdown'>
-      <% if (my_communities) for(var c of my_communities) {%>
-        <li><h4><%= c.name %></h4></li>
-      <% } %>
-      </ul>
+        <ul class='dropdown'>
+        <% if (followed_communities) for(var c of followed_communities) {%>
+          <% if (c.name) {%>
+          <li><h4><%= c.name %></h4></li>
+          <% } %>
+        <% } %>
+        </ul>
       </li>
-      <li><h4>Page5</h4></li>
-      <li><h4>About</h4></li>
+      <li class='category'><h4>Popular</h4>
+        <ul class='dropdown'>
+        <% if (popular_communities) for(var c of popular_communities) {%>
+          <% if (c.name) {%>
+          <li><h4><%= c.name %></h4></li>
+          <% } %>
+        <% } %>
+        </ul>
+      </li>
+      <li><a href="/my-profile"><h4>Profile</h4></li>
+      <li><a href="/new-post"><h4>New Post</h4></a></li>
     </ul>
     </div>
   </nav>

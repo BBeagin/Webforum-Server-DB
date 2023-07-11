@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel='stylesheet' href='/style.css' />
+  <title>Your Profile</title>
+  <script src="/my-profile.js"></script>
+</head>
+<body>
+  <%- include('header', {title: username, followed_communities: followed_communities}) %>
+  <div class='content'>
+    <div class='container'>
+      <table>
+        <tr>
+          <td id='info-cell'>
+            <h1 id='username'>Username: <%= username %></h1>
+            <h2 id='email'>Email: <%= email %></h2>
+            <h2 id='password'>Password</h2>
+          </td>
+          <td id="change-info">
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  
+  <div class='content' id='my_posts_comms'>
+    <div class='container'>
+      <table>
+        <tr>
+          <th><h1>Your Posts</h1></th>
+          <th><h1>Your Communities</h1></th>
+        </tr>
+        <tr>
+          <td>
+            <ul id="my_posts">
+              <% for (var p of posts) {%>
+              <li class="my_post">
+                <%- include('post-table', {post: p}) %>
+              </li>
+              <% } %>
+            </ul>
+          </td>
+          <td>
+            <ul id="my_comms">
+              <% for (var c of owned_communities) {%>
+              <li class="my_comm">
+                <h1> <%= c.name %> </h1>
+              </li>
+              <% } %>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div class='container'>
+      <h5>Contact Us:</h5>
+      <ul id='contact-list'>
+        <li><h6>Email: example@email-server.com</h6></li>
+        <li><h6>Phone: (012)-345-6789</h6></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

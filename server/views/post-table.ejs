@@ -1,0 +1,25 @@
+<table>
+  <tr>
+    <h4><%= post.username %> @ <%= post.belongs_in %></h4>
+    <% if (post.post_age) {%>
+      <% if (post.post_age < 24) {%>
+      <h4>Posted <%= post.post_age %> Hours ago</h4>
+      <% } else {%>
+      <h4><%= Math.floor(post.post_age/24) %> Days ago</h4>
+      <% } %>
+    <% } else if (post.post_date) {%>
+      <h4>Posted <%= post.post_date %></h4>
+    <% } %>
+  </tr>
+  <tr class='post-content'>
+    <% if(post.image_content) {%>
+    <td><img id='pic' src='data:image/png;base64,<%= post.image_content %>' alt='[Image Content]' /></td>
+    <% } %>
+    <td id='info-cell'>
+    <h2 id='title'><%= post.title %></h2>
+    <% if(post.text_content) {%>
+    <p id='text'><%= post.text_content %></p>
+    <% } %>
+    </td>
+  </tr>
+</table>

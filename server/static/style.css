@@ -93,12 +93,19 @@ nav>.xcontainer::-webkit-scrollbar {
 #navbar>li:hover{
   background-color: #00000033;
 }
-#navbar>li>h4{
+#navbar>li>h4,#navbar>li>a>h4{
   padding: 0;
   margin: 0;
   display: inline;
   width: auto;
   user-select: none;
+}
+
+#navbar a {
+  color: black;
+  text-decoration: none;
+  padding: 0;
+  margin: 0;
 }
 
 @media only screen and (max-aspect-ratio: 2/3) {
@@ -130,6 +137,7 @@ nav>.xcontainer::-webkit-scrollbar {
 .category:hover > .dropdown, .dropdown:hover {
   padding: 20px;
   background-color: #66666633;
+  backdrop-filter: blur(5px);
   display: block;
 }
 
@@ -161,9 +169,13 @@ nav>.xcontainer::-webkit-scrollbar {
   margin-bottom: 50px;
 }
 
+.post-content > td:first-of-type {
+  max-width: 50%;
+  width: 50%;
+}
+
 #pic {
-  height: 90%;
-  width: auto;
+  max-width: 100%;
   border: 1px solid black;
   padding: 5px;
   margin: 5px;
@@ -175,6 +187,37 @@ nav>.xcontainer::-webkit-scrollbar {
 #id, #major {
   margin: 10px 0;
 }
+
+#my_posts_comms {
+  background-color: #0033A44D;
+}
+
+#my_posts_comms>.container>table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#my_posts_comms>.container>table>tbody>tr>* {
+  width: 50%;
+  background-color: #FFFFFF33;
+  border: 1px solid black;
+}
+
+#my_posts, #my_comms {
+  list-style: none;
+  padding: 0;
+}
+
+.my_post {
+  background-color: #FFFFFF33;
+  padding: 1px 5px;
+  margin: 10px;
+}
+
+.my_comm {
+  text-align: center;
+}
+
 
 footer {
   flex: 100%;

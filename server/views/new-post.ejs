@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='./style.css' />
+    <title>New Post</title>
+  </head>
+  <body>
+    <%- include('header', {title:'New Post', followed_communities: followed_communities}) %>
+    <div class='content'>
+      <div class='container'>
+        <form action="/new-post" method="POST" enctype="multipart/form-data">
+          <label for="title">Title:</label><br>
+          <input type="text" id="title" name="title" maxlength="75" required><br><br>
+          
+          <label for="text_content">Content:</label><br>
+          <textarea id="text_content" name="text_content" rows="5" cols="50" required></textarea><br><br>
+          
+          <label for="image_content">Image:</label><br>
+          <input type="file" id="image_content" name="image_content" accept=".jpg, .jpeg, .png"><br><br>
+
+          <div class="community-container">
+          <input type="text" id="community-search" placeholder="Search community" onchange="filterCommunities()"><br><br>
+          <select id="belongs_in" name="belongs_in">
+            <% communities.forEach((community) => { %>
+              <option value="<%= community.name %>"><%= community.name %></option>
+            <% }); %>
+          </select>
+          </div><br><br>
+          
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+
+    <footer>
+        <div class='container'>
+        <h5>Contact Us:</h5>
+        <ul id='contact-list'>
+            <li><h6>Email: example@email-server.com</h6></li>
+            <li><h6>Phone: (012)-345-6789</h6></li>
+        </ul>
+        </div>
+    </footer>
+
+    <script>
+      function filterCommunities() {
+        var input, filter, select, options, i, option;
+        input = document.getElementById("community-search");
+        filter = input.value.toUpperCase();
+        select = document.getElementById("belongs_in");
+        options = select.getElementsByTagName("option");
+  
+        for (i = 0; i < options.length; i++) {
+          option = options[i];
+          if (option.textContent.toUpperCase().startsWith(filter)) {
+            option.style.display = "";
+          } else {
+            option.style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
