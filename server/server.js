@@ -146,7 +146,7 @@ app.get('/feed', (req, res) => {
             res.redirect('/')
           })
         else {
-          const interval_days = 2;
+          const interval_days = 5;
           const feed = await getUserFeed(req.session.uid, interval_days)
           const followed_communities = await getFollowedCommunities(req.session.uid)
           const popular_communities = await getPopularCommunities(10)
