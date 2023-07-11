@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel='stylesheet' href='./style.css' />
+  <title>Manage Groups</title>
+</head>
+<body>
+  <%- include('header', {title:'Manage Groups', followed_communities: followed_communities}) %>
+
+  <div class='content'>
+    <div class='container'>
+      <table>
+        <thead>
+          <tr>
+            <th><h1>Create Group</h1></th>
+            <th><h1>Join Group</h1></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            
+            <td>
+              <form method="POST" action="/create-group">
+                <input type="text" name="group_name" placeholder="Group Name" required/><br>
+                <button type="submit">Create!</button>
+              </form>
+            </td>
+
+            <td>
+              <form method="POST" action="/join-group">
+                <input type="text" name="group_id" placeholder="Group ID" required/><br>
+                <button type="submit">Join</button>
+              </form>
+            </td>
+        
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class='content'>
+    <div class='container'>
+      <h1>Your Groups</h1>
+      <% if(groups && groups.length > 0) {%>
+        <ul>
+        <% for(var g of groups) {%>
+          <li><%= g.gid %> | <%= g.group_name %>: <% if (!groups_m) {%>Test<% } %><% for (var m of groups_m) {%><%= m %>, <% } %> <p><a href="/leave-group?gid=<%= g.gid %>">Leave</a></p></li>
+        <% } %>
+        </ul>
+      <% } else { %>
+        <h3>You have no groups!</h3>
+      <% } %>
+    </div>
+  </div>
+
+  <footer>
+    <div class='container'>
+      <h5>Contact Us:</h5>
+      <ul id='contact-list'>
+        <li><h6>Email: example@email-server.com</h6></li>
+        <li><h6>Phone: (012)-345-6789</h6></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

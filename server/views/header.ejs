@@ -12,7 +12,7 @@
         <ul class='dropdown'>
         <% if (followed_communities) for(var c of followed_communities) {%>
           <% if (c.name) {%>
-          <li><h4><%= c.name %></h4></li>
+          <li><a href="/community?community=<%= c.name %>"><h4><%= c.name %></h4></a></li>
           <% } %>
         <% } %>
         </ul>
@@ -21,12 +21,18 @@
         <ul class='dropdown'>
         <% if (popular_communities) for(var c of popular_communities) {%>
           <% if (c.name) {%>
-          <li><h4><%= c.name %></h4></li>
+          <li><a href="/community?community=<%= c.name %>"><h4><%= c.name %></h4></a></li>
           <% } %>
         <% } %>
         </ul>
       </li>
-      <li><a href="/my-profile"><h4>Profile</h4></li>
+      <li class='category'><h4>Social</h4>
+        <ul class='dropdown'>
+          <li><a href="/messages"><h4>Messages</h4></a></li>
+          <li><a href="/groups"><h4>Group Management</h4></a></li>
+        </ul>
+      </li>
+      <li><a href="/my-profile"><h4>Profile</h4></a></li>
       <li><a href="/new-post"><h4>New Post</h4></a></li>
     </ul>
     </div>

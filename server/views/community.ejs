@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel='stylesheet' href='./style.css' />
+  <title><%= name %></title>
+</head>
+<body>
+  <%- include('header', {title:name, followed_communities: followed_communities}) %>
+
+  <div class='content' id='community-desc'>
+    <table class='container'>
+      </tbody>
+        <tr>
+          <td>
+            <h4>Community Description:<h4>
+            <p><%= description %></p>
+          </td>
+          <td>
+            <% var following = false;
+              for(var c of followed_communities) {
+                if (c.name == name) following = true;
+              }
+              if (!following) {%>
+            <form method="POST" action="/follow">
+              <input type='hidden' name='community' value='<%= name %>'>
+              <input type='submit' value='Follow' />
+            </form>
+            <% } else {%>
+              <form method="POST" action="/unfollow">
+                <input type='hidden' name='community' value='<%= name %>'>
+                <input type='submit' value='Unfollow' />
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <% if(posts) for(var p of posts) {%>
+  <div class='content'>
+    <div class='container'>
+      <%- include('post-table', {post: p}) %>
+    </div>
+  </div>
+  <% } %>
+
+  <footer>
+    <div class='container'>
+      <h5>Contact Us:</h5>
+      <ul id='contact-list'>
+        <li><h6>Email: example@email-server.com</h6></li>
+        <li><h6>Phone: (012)-345-6789</h6></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

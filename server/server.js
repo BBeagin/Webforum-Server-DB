@@ -4,7 +4,7 @@ const MSQLStore = require('express-mysql-session')(session)
 //const mysql = require('mysql2')
 const path = require('path')
 
-const { promise_pool, checkCredentials, registerCheck, getUserId, getEmail, getUsername, getUserPosts, getUserFeed, getOwnedCommunities, getFollowedCommunities, getPopularCommunities, getAllCommunities, createUser, createPost, changeEmail, changeUsername, changePassword } = require('./queries.js');
+const { promise_pool, checkCredentials, registerCheck, getUserId, getEmail, getUsername, getUserPosts, getUserFeed, getCommunityPosts, getCommunityDescription, getOwnedCommunities, getFollowedCommunities, getPopularCommunities, getAllCommunities, getUserGroups, getGroupMembers, getUserInbox, createUser, createPost, createGroup, composeMessage_User, joinGroup, followUC, changeEmail, changeUsername, changePassword, leaveGroup, deleteGroup, unfollowUC } = require('./queries.js');
 
 const multer = require('multer');
 const upload = multer();
@@ -60,11 +60,11 @@ app.get('/', (req, res) => {
   } else {
     res.redirect('/login')
   }
-})
+});
 
 app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'register.html'))
-})
+});
 
 app.post('/register', (req,res) => {
   const {email, username, password} = req.body;
@@ -76,7 +76,7 @@ app.post('/register', (req,res) => {
         res.redirect('/register')
       } else {
         await createUser(email, username, password);
-        const uid = await getUserId(email, username, password);
+        const uid = await getUserId(username);
         if (req.session.uid)
             req.session.regenerate((error) => {
               if (error) throw error
@@ -97,11 +97,11 @@ app.post('/register', (req,res) => {
       res.redirect('/');
     }
   })();
-})
+});
 
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'))
-})
+});
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -134,7 +134,7 @@ app.post('/login', (req, res) => {
       res.redirect('/');
     }
   })();
-})
+});
 
 app.get('/feed', (req, res) => {
   if (req.session.uid) {
@@ -162,7 +162,7 @@ app.get('/feed', (req, res) => {
       res.redirect('/')
     })
   }
-})
+});
 
 app.get('/new-post', (req, res) => {
   if(req.session && req.session.uid) {
@@ -183,7 +183,7 @@ app.get('/new-post', (req, res) => {
     })
   } else
     res.redirect('/login')
-})
+});
 
 app.post('/new-post', upload.single('image_content'), (req, res) => {
   const {title, text_content, belongs_in} = req.body
@@ -208,7 +208,7 @@ app.post('/new-post', upload.single('image_content'), (req, res) => {
     })
   } else
     res.redirect('/login')
-})
+});
 
 app.get('/my-profile', (req, res) => {
   if (req.session.uid) {
@@ -228,7 +228,7 @@ app.get('/my-profile', (req, res) => {
   } else {
     res.redirect('/login')
   }
-})
+});
 
 app.post('/change-user', function(req, res) {
   if (req.session && req.session.uid) {
@@ -257,7 +257,7 @@ app.post('/change-user', function(req, res) {
               var uid = req.session.uid;
               req.session.regenerate((error) => {
                 if (error) throw error;
-                
+
                 req.session.uid = uid;
                 req.session.username = req.body.new_val;
                 res.redirect('/feed');
@@ -288,6 +288,233 @@ app.post('/change-user', function(req, res) {
   console.log(`${req.body.field} change to ${req.body.new_val}; pass: ${req.body.pass}`);
 });
 
+app.get('/groups', function(req, res) {
+  if (req.session.uid) {
+    (async () => {
+      try {
+        const username = await getUsername(req.session.uid)
+        if (username.length == 0 || username[0].username != req.session.username)
+          req.session.destroy(() => {
+            res.redirect('/')
+          })
+        else {
+          const user_groups = await getUserGroups(req.session.uid);
+          const followed_communities = await getFollowedCommunities(req.session.uid);
+          const popular_communities = await getPopularCommunities(10);
+          var groups_members = [];
+
+          if(user_groups.length > 0) {
+            for(var g of user_groups) {
+              var members = await getGroupMembers(g.gid);
+              var m_arr = [];
+              for(var m of members)
+                m_arr.push(m.username);
+              groups_members.push(m_arr);
+            }
+          }
+          res.render('groups', {username: req.session.username, groups: user_groups, groups_m: groups_members, followed_communities: followed_communities, popular_communities: popular_communities});
+        }
+      } catch (error) {
+        console.log(error)
+        res.redirect('/');
+      }
+    })();
+  } else {
+    req.session.destroy(() => {
+      res.redirect('/')
+    })
+  }
+});
+
+app.post('/create-group', function(req, res) {
+  const {group_name} = req.body
+
+  if(req.session && req.session.uid) {
+    if(group_name) {
+      (async () => {
+        try {
+          const gid = await createGroup(group_name);
+          if (gid) {
+            console.log(`New Group (${gid}): ${group_name} -> [ ${req.session.username} ]`)
+            await joinGroup(gid, req.session.uid);
+            res.redirect('/groups')
+          } else
+            res.redirect('/my-profile');
+        } catch (error) {
+          console.log(error);
+          res.redirect('/');
+        }
+      })();
+    }
+  } else if (req.session) {
+    req.session.destroy(() => {
+      res.redirect('/login')
+    })
+  } else
+    res.redirect('/login')
+});
+
+app.post('/join-group', function(req, res) {
+  const {group_id} = req.body
+
+  if(req.session && req.session.uid) {
+    if(group_id) {
+      (async () => {
+        try {
+          if (group_id) {
+            await joinGroup(group_id, req.session.uid);
+            res.redirect('/groups')
+          } else
+            res.redirect('/my-profile');
+        } catch (error) {
+          console.log(error);
+          res.redirect('/');
+        }
+      })();
+    }
+  } else if (req.session) {
+    req.session.destroy(() => {
+      res.redirect('/login')
+    })
+  } else
+    res.redirect('/login')
+});
+
+app.get('/leave-group', function (req, res) {
+  const gid = req.query.gid;
+
+  if (gid && req.session && req.session.uid) {
+    (async () => {
+      try {
+        await leaveGroup(req.session.uid, gid);
+        var members = await getGroupMembers(gid);
+        if (members.length == 0)
+          await deleteGroup(gid);
+        res.redirect('/groups')
+      } catch (error) {
+        console.log(error);
+        res.redirect('/');
+      }
+    })();
+  } else {
+    res.redirect('/')
+  }
+});
+
+app.get('/messages', function (req, res) {
+  if (req.session.uid) {
+    (async () => {
+      try {
+        const username = await getUsername(req.session.uid)
+        if (username.length == 0 || username[0].username != req.session.username)
+          req.session.destroy(() => {
+            res.redirect('/')
+          })
+        else {
+          const inbox = await getUserInbox(req.session.uid);
+          const followed_communities = await getFollowedCommunities(req.session.uid);
+          const popular_communities = await getPopularCommunities(10);
+          res.render('messages', {username: req.session.username, messages: inbox, followed_communities: followed_communities, popular_communities: popular_communities});
+        }
+      } catch (error) {
+        console.log(error)
+        res.redirect('/');
+      }
+    })();
+  } else {
+    req.session.destroy(() => {
+      res.redirect('/')
+    })
+  }
+});
+
+app.post('/compose', function (req, res) {
+  const { recipient, text_content } = req.body;
+
+  if(req.session.uid) {
+    (async () => {
+      try {
+        const uid = await getUserId(recipient)
+        if (uid) {
+          await composeMessage_User(req.session.uid, uid, text_content)
+          res.redirect('/messages')
+        }
+      } catch (error) {
+        console.log(error)
+        res.redirect('/');
+      }
+    })();
+  } else {
+    res.redirection('')
+  }
+
+  console.log(`${recipient}: ${text_content}`);
+});
+
+app.get('/community', function (req, res) {
+  const community = req.query.community;
+
+  (async () => {
+    try {
+      const desc = await getCommunityDescription(community);
+      if (desc) {
+        const posts = await getCommunityPosts(community);
+        const followed_communities = await getFollowedCommunities(req.session.uid);
+        const popular_communities = await getPopularCommunities(10);
+        res.render('community', {posts: posts, description: desc, name: community, followed_communities: followed_communities, popular_communities: popular_communities});
+      } else {
+        res.rediret('/');
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect('/');
+    }
+  })();
+
+});
+
+app.post('/follow', function (req, res) {
+  const { community, uid } = req.body;
+
+  (async () => {
+    try {
+      if (req.session && req.session.uid) {
+        await followUC(req.session.uid, null, community);
+        if(community)
+          res.redirect(`/community?community=${community}`);
+        else
+          res.send('Temp');
+      } else {
+        res.rediret('/');
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect('/');
+    }
+  })();
+});
+
+app.post('/unfollow', function (req, res) {
+  const { community, uid } = req.body;
+
+  (async () => {
+    try {
+      if (req.session && req.session.uid) {
+        await unfollowUC(req.session.uid, null, community);
+        if(community)
+          res.redirect(`/community?community=${community}`);
+        else
+          res.send('Temp');
+      } else {
+        res.rediret('/');
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect('/');
+    }
+  })();
+});
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Example app listening on port ${port}`);
+});

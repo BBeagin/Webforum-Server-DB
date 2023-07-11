@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel='stylesheet' href='./style.css' />
+  <title>Message Center</title>
+</head>
+<body>
+  <%- include('header', {title:'Message Center', followed_communities: followed_communities}) %>
+
+  <div class='content'>
+    <div class='container'>
+      <table id='msg-list' class='container'>
+        <thead>
+          <tr>
+            <th colspan="2">
+              <form method="POST" action="/compose">
+                <label for="recipient">Use '#' to reference a group</label><br>
+                <input type="text" name="recipient" placeholder="username or #group-number"/><br>
+                <textarea name="text_content" placeholder="Type your message here!"></textarea><br>
+                <button type="submit">Compose Message</button>
+              </form>
+              <h1>Inbox:</h1>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var msg of messages) {%>
+          <tr id="msg-instance">
+            <td id='msg-users'><%= msg.username %></td>
+            <td id='msg-content'><%= msg.text_content %></td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div class='container'>
+      <h5>Contact Us:</h5>
+      <ul id='contact-list'>
+        <li><h6>Email: example@email-server.com</h6></li>
+        <li><h6>Phone: (012)-345-6789</h6></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

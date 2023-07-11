@@ -218,6 +218,26 @@ nav>.xcontainer::-webkit-scrollbar {
   text-align: center;
 }
 
+#msg-list {
+  border-collapse: collapse;
+}
+
+#msg-list thead>tr:first-child>th {
+  padding: 10px 0;
+}
+
+#msg-instance {
+  background-color: #FFFFFF33;
+}
+
+#msg-compose {
+  width: 50%;
+  max-width: 50%;
+}
+
+#community-desc {
+  background-color: #0033A44D;
+}
 
 footer {
   flex: 100%;

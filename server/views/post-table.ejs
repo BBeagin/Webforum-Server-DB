@@ -22,4 +22,9 @@
     <% } %>
     </td>
   </tr>
+  <tr class='post-engagement'>
+    <% if (post.like_count) {%>
+      <td><p><%= post.like_count %> Likes</p></td>
+    <% } %>
+  </tr>
 </table>
